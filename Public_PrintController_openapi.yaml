@@ -1,0 +1,929 @@
+openapi: 3.0.1
+info:
+  title: PrintController API
+  description: PrintController API
+  version: "1.0"
+servers:
+- url: /
+paths:
+  /api/printers:
+    get:
+      tags:
+      - Printers
+      summary: Retrieve printer records. The returned list depends on the query parameters
+        that serve as a filter.
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BarTender.Printing.Common.Capabilities.Printer'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "500":
+          description: Server Error
+  /api/printers/{printerId}:
+    get:
+      tags:
+      - Printers
+      summary: Retrieve a printer record
+      parameters:
+      - name: printerId
+        in: path
+        description: Identifies the printer record to retrieve
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BarTender.Printing.Common.Capabilities.Printer'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "500":
+          description: Server Error
+    patch:
+      tags:
+      - Printers
+      summary: Update a printer record
+      parameters:
+      - name: printerId
+        in: path
+        description: Identifies the printer record to update
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/Microsoft.AspNetCore.JsonPatch.Operations.Operation'
+                - $ref: "#/components/schemas/Microsoft.AspNetCore.JsonPatch.Operations.Operation`1[TModel]"
+          application/json:
+            schema:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/Microsoft.AspNetCore.JsonPatch.Operations.Operation'
+                - $ref: "#/components/schemas/Microsoft.AspNetCore.JsonPatch.Operations.Operation`1[TModel]"
+          text/json:
+            schema:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/Microsoft.AspNetCore.JsonPatch.Operations.Operation'
+                - $ref: "#/components/schemas/Microsoft.AspNetCore.JsonPatch.Operations.Operation`1[TModel]"
+          application/*+json:
+            schema:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/Microsoft.AspNetCore.JsonPatch.Operations.Operation'
+                - $ref: "#/components/schemas/Microsoft.AspNetCore.JsonPatch.Operations.Operation`1[TModel]"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BarTender.Printing.Common.Capabilities.Printer'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "500":
+          description: Server Error
+  /api/printers/{printerId}/queue:
+    get:
+      tags:
+      - Printers
+      summary: Retrieve active (or recently-finished) print-job records from the specified
+        print queue
+      parameters:
+      - name: printerId
+        in: path
+        description: Identifies the print queue to retrieve job records from
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BarTender.Printing.Common.PrintJobRecordQueryResult'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "500":
+          description: Server Error
+    post:
+      tags:
+      - Printers
+      summary: Submit a new print job
+      parameters:
+      - name: printerId
+        in: path
+        description: Identifies the print queue to submit the job to
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BarTender.Printing.Common.PrintJobRecord'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "500":
+          description: Server Error
+  /api/printers/{printerId}/queue/{printJobId}:
+    get:
+      tags:
+      - Printers
+      summary: Retrieve print-job information on an active (or recently-finished)
+        print job
+      parameters:
+      - name: printerId
+        in: path
+        description: Identifies the print queue
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: printJobId
+        in: path
+        description: Identifies the print job
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BarTender.Printing.Common.PrintJobRecord'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "500":
+          description: Server Error
+    patch:
+      tags:
+      - Printers
+      summary: Submit additional print data to a an active print job
+      parameters:
+      - name: printerId
+        in: path
+        description: Identifies the print queue to submit the job to
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: printJobId
+        in: path
+        description: Identifies the active print job to add print data to
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Success
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "500":
+          description: Server Error
+  /api/printhistory/jobs:
+    get:
+      tags:
+      - PrintHistory
+      summary: "Retrieve print-history job records.  The returned collection of job\
+        \ records depends on\r\nthe query parameters that serve a a filter."
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BarTender.Printing.Common.PrintJobHistoryRecord'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "500":
+          description: Server Error
+  /api/printhistory/jobs/stats:
+    get:
+      tags:
+      - PrintHistory
+      summary: Return the statistics for the print job records in the print-history
+        database
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: {}
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "500":
+          description: Server Error
+  /api/printhistory/printeditems:
+    get:
+      tags:
+      - PrintHistory
+      summary: "Retrieve the printed items from the history database.  The returned\
+        \ collection\r\ndepends on the query parameters that server a filter (e.g.,\
+        \ \"jobId=2022-08-30/1\")"
+      description: "This endpoint is meant only for internal use.  As such, this REST\
+        \ endpoint is\r\ncurrently hidden from public documentation. See appsettings.json\
+        \ and the\r\nkey \"AppSettings:ControllersToHideForPublicSwaggerDoc\"."
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BarTender.Printing.Common.PrintedItemRecord'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "500":
+          description: Server Error
+  /api/printhistory/printeditems/stats:
+    get:
+      tags:
+      - PrintHistory
+      summary: Return the statistics for the printed-items in the print-history database
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: {}
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "500":
+          description: Server Error
+components:
+  schemas:
+    BarTender.Printing.Common.Capabilities.ClientEnviroment:
+      type: object
+      properties:
+        ID:
+          type: string
+          nullable: true
+        FQDName:
+          type: string
+          nullable: true
+        IPAddress:
+          type: string
+          nullable: true
+        OSVersion:
+          type: string
+          nullable: true
+      additionalProperties: false
+    BarTender.Printing.Common.Capabilities.FeatureOption:
+      type: object
+      properties:
+        ID:
+          type: string
+          nullable: true
+        Name:
+          type: string
+          nullable: true
+      additionalProperties: false
+    BarTender.Printing.Common.Capabilities.IntegerRangeLimits:
+      type: object
+      properties:
+        Minimum:
+          type: integer
+          format: int32
+        Maximum:
+          type: integer
+          format: int32
+        Default:
+          type: integer
+          format: int32
+      additionalProperties: false
+    BarTender.Printing.Common.Capabilities.MediaSizeLimits:
+      type: object
+      properties:
+        MinimumWidth:
+          type: string
+          nullable: true
+        MaximumWidth:
+          type: string
+          nullable: true
+        MinimumLength:
+          type: string
+          nullable: true
+        MaximumLength:
+          type: string
+          nullable: true
+      additionalProperties: false
+    BarTender.Printing.Common.Capabilities.PrintCapabilities:
+      type: object
+      properties:
+        PdlFamily:
+          type: string
+          nullable: true
+        MarkingTechnology:
+          type: string
+          nullable: true
+        Color:
+          type: boolean
+        Grayscale:
+          type: boolean
+        Duplex:
+          type: boolean
+        Collate:
+          type: boolean
+        Mirror:
+          type: boolean
+        Negative:
+          type: boolean
+        MagStripe:
+          type: boolean
+        RFID:
+          type: boolean
+        Resolutions:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/BarTender.Printing.Common.Capabilities.PrinterResolution'
+        PrintQuality:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/BarTender.Printing.Common.Capabilities.FeatureOption'
+        PageOrientations:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/BarTender.Printing.Common.Capabilities.FeatureOption'
+        MaximumCopies:
+          type: integer
+          format: int32
+        MediaTypes:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/BarTender.Printing.Common.Capabilities.FeatureOption'
+        PaperSizeLimits:
+          $ref: '#/components/schemas/BarTender.Printing.Common.Capabilities.MediaSizeLimits'
+        StockList:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/BarTender.Printing.Common.Capabilities.Stock'
+        InputBins:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/BarTender.Printing.Common.Capabilities.FeatureOption'
+        OutputBins:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/BarTender.Printing.Common.Capabilities.FeatureOption'
+        PrintMethods:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/BarTender.Printing.Common.Capabilities.FeatureOption'
+        DarknessMethods:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/BarTender.Printing.Common.Capabilities.FeatureOption'
+        Darkness:
+          $ref: '#/components/schemas/BarTender.Printing.Common.Capabilities.IntegerRangeLimits'
+        AbsoluteDarkness:
+          $ref: '#/components/schemas/BarTender.Printing.Common.Capabilities.IntegerRangeLimits'
+        RelativeDarkness:
+          $ref: '#/components/schemas/BarTender.Printing.Common.Capabilities.IntegerRangeLimits'
+        PrintSpeeds:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/BarTender.Printing.Common.Capabilities.FeatureOption'
+        SlewSpeeds:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/BarTender.Printing.Common.Capabilities.FeatureOption'
+        BackfeedSpeeds:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/BarTender.Printing.Common.Capabilities.FeatureOption'
+      additionalProperties: false
+    BarTender.Printing.Common.Capabilities.Printer:
+      type: object
+      properties:
+        PrinterId:
+          type: string
+          nullable: true
+        PrinterGuid:
+          type: string
+          nullable: true
+        Name:
+          type: string
+          nullable: true
+        ModelName:
+          type: string
+          nullable: true
+        Comment:
+          type: string
+          nullable: true
+        Location:
+          type: string
+          nullable: true
+        Tags:
+          type: string
+          nullable: true
+        Connection:
+          $ref: '#/components/schemas/BarTender.Printing.Common.Capabilities.PrinterConnection'
+        Client:
+          $ref: '#/components/schemas/BarTender.Printing.Common.Capabilities.ClientEnviroment'
+        Status:
+          type: integer
+          format: int32
+        StatusText:
+          type: string
+          nullable: true
+        MetaData:
+          type: object
+          additionalProperties:
+            type: string
+          nullable: true
+        PrintCapabilities:
+          $ref: '#/components/schemas/BarTender.Printing.Common.Capabilities.PrintCapabilities'
+        DevModeRepresentation:
+          type: string
+          nullable: true
+        DeviceCaps:
+          $ref: '#/components/schemas/BarTender.Printing.Common.Capabilities.PrinterDeviceCaps'
+        UpdateStatus:
+          $ref: '#/components/schemas/BarTender.Printing.Common.Capabilities.Printer+PrinterUpdateStatus'
+      additionalProperties: false
+    BarTender.Printing.Common.Capabilities.Printer+PrinterUpdateStatus:
+      type: integer
+      format: int32
+      enum:
+      - 0
+      - 1
+      - 2
+      - 3
+    BarTender.Printing.Common.Capabilities.PrinterConnection:
+      type: object
+      properties:
+        PortName:
+          type: string
+          nullable: true
+        PortType:
+          type: string
+          nullable: true
+        Remote:
+          type: boolean
+        HostName:
+          type: string
+          nullable: true
+        IpAddress:
+          type: string
+          nullable: true
+        PortNumber:
+          type: integer
+          format: int32
+          nullable: true
+      additionalProperties: false
+    BarTender.Printing.Common.Capabilities.PrinterDeviceCaps:
+      type: object
+      properties:
+        ResolutionX:
+          type: integer
+          format: int32
+        ResolutionY:
+          type: integer
+          format: int32
+        ColorMgmtCaps:
+          type: integer
+          format: int32
+        MaxHeight:
+          type: integer
+          format: int32
+        MaxWidth:
+          type: integer
+          format: int32
+        PhysicalOffsetX:
+          type: integer
+          format: int32
+        PhysicalOffsetY:
+          type: integer
+          format: int32
+        SizeX:
+          type: integer
+          format: int32
+        SizeY:
+          type: integer
+          format: int32
+        PhysicalHeight:
+          type: integer
+          format: int32
+        PhysicalWidth:
+          type: integer
+          format: int32
+        HorizontalResolution:
+          type: integer
+          format: int32
+        VerticalResolution:
+          type: integer
+          format: int32
+      additionalProperties: false
+    BarTender.Printing.Common.Capabilities.PrinterResolution:
+      type: object
+      properties:
+        ID:
+          type: string
+          nullable: true
+        Name:
+          type: string
+          nullable: true
+        X:
+          type: integer
+          format: int32
+        "Y":
+          type: integer
+          format: int32
+      additionalProperties: false
+    BarTender.Printing.Common.Capabilities.Stock:
+      type: object
+      properties:
+        ID:
+          type: string
+          nullable: true
+        Name:
+          type: string
+          nullable: true
+        Width:
+          type: string
+          nullable: true
+        Height:
+          type: string
+          nullable: true
+      additionalProperties: false
+    BarTender.Printing.Common.JobEventItem:
+      type: object
+      properties:
+        Event:
+          type: string
+          nullable: true
+        Time:
+          type: string
+          format: date-time
+        Message:
+          type: string
+          nullable: true
+      additionalProperties: false
+    BarTender.Printing.Common.PrintJobHistoryRecord:
+      type: object
+      properties:
+        JobId:
+          type: string
+          nullable: true
+        JobName:
+          type: string
+          nullable: true
+        JobResources:
+          type: array
+          nullable: true
+          items:
+            type: string
+        PrinterId:
+          type: string
+          nullable: true
+        UserId:
+          type: string
+          nullable: true
+        JobValues:
+          type: object
+          additionalProperties:
+            type: integer
+            format: int32
+            nullable: true
+          nullable: true
+        CreatedTime:
+          type: string
+          format: date-time
+        JobStatus:
+          type: string
+          nullable: true
+        JobEvents:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/BarTender.Printing.Common.JobEventItem'
+      additionalProperties: false
+    BarTender.Printing.Common.PrintJobRecord:
+      type: object
+      properties:
+        JobId:
+          type: string
+          nullable: true
+        JobName:
+          type: string
+          nullable: true
+        UserId:
+          type: string
+          nullable: true
+        PrinterId:
+          type: string
+          nullable: true
+        JobStatus:
+          type: string
+          nullable: true
+        CreatedUtm:
+          type: integer
+          format: int64
+        LastUpdatedUtm:
+          type: integer
+          format: int64
+      additionalProperties: false
+    BarTender.Printing.Common.PrintJobRecordQueryResult:
+      type: object
+      properties:
+        JobRecords:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/BarTender.Printing.Common.PrintJobRecord'
+        TotalResults:
+          type: integer
+          format: int64
+      additionalProperties: false
+    BarTender.Printing.Common.PrintedItemRecord:
+      type: object
+      properties:
+        JobId:
+          type: string
+          nullable: true
+        PageNumber:
+          type: integer
+          format: int32
+        Position:
+          type: integer
+          format: int32
+        TemplateUri:
+          type: string
+          nullable: true
+        ObjectValues:
+          type: object
+          additionalProperties:
+            type: string
+            nullable: true
+          nullable: true
+      additionalProperties: false
+    Microsoft.AspNetCore.JsonPatch.Operations.Operation:
+      type: object
+      properties:
+        value:
+          nullable: true
+      additionalProperties: false
+      allOf:
+      - $ref: '#/components/schemas/Microsoft.AspNetCore.JsonPatch.Operations.OperationBase'
+    Microsoft.AspNetCore.JsonPatch.Operations.OperationBase:
+      type: object
+      properties:
+        OperationType:
+          $ref: '#/components/schemas/Microsoft.AspNetCore.JsonPatch.Operations.OperationType'
+        path:
+          type: string
+          nullable: true
+        op:
+          type: string
+          nullable: true
+        from:
+          type: string
+          nullable: true
+      additionalProperties: false
+    Microsoft.AspNetCore.JsonPatch.Operations.OperationType:
+      type: integer
+      format: int32
+      enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+    Microsoft.AspNetCore.JsonPatch.Operations.Operation`1[TModel]:
+      type: object
+      additionalProperties: false
+      allOf:
+      - $ref: '#/components/schemas/Microsoft.AspNetCore.JsonPatch.Operations.Operation'
+    Microsoft.AspNetCore.Mvc.ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        status:
+          type: integer
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          nullable: true
+        instance:
+          type: string
+          nullable: true
+      additionalProperties: {}
+    Microsoft.AspNetCore.Mvc.ValidationProblemDetails:
+      type: object
+      properties:
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          nullable: true
+          readOnly: true
+      additionalProperties: {}
+      allOf:
+      - $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+    inline_response_400:
+      oneOf:
+      - $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+      - $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ValidationProblemDetails'
